@@ -7,6 +7,17 @@ cd hopetickets
 git submodule init
 ```
 
+## Using
+```sh
+./main.py init
+./main.py gentokens attendee 1000
+# repeat for other types
+./main.py export attendee
+# repeat for other types. produces export-*.csv
+./main.py send attendee you@example.com 2
+```
+Note that more tokens will be automatically generated if unused ones run out.
+
 ## Contributing
 Install as above, but add the development requirements:
 ```sh
@@ -14,8 +25,10 @@ virtualenv -p python3 venv
 . venv/bin/activate
 pip install -r requirements.txt -r requirements-dev.txt
 ```
-Before committing, use `black` and `flake8`:
-  black . && flake8 .
+Before committing, format and lint:
+```sh
+black . && flake8 .
+```
 
 
 ## Running
