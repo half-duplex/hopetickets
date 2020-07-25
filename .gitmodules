@@ -1,0 +1,7 @@
+[submodule "vendor/tomlkit"]
+	path = vendor/tomlkit
+	url = https://github.com/sdispater/tomlkit.git
+	branch = 0.6.0
+[submodule "vendor_checkout/tomlkit"]
+	path = vendor_checkout/tomlkit
+	url = https://github.com/sdispater/tomlkit.git

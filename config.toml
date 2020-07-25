@@ -1,0 +1,410 @@
+[tokens]
+db_file = "tokens.db"
+token_types = ["attendee", "comped", "speaker", "workshop"]
+log_level = "DEBUG"
+
+[emails]
+log_level = "DEBUG"
+sender_name = "Hackers On Planet Earth"
+sender_email = "tickets@hope.net"
+subject = "Your {ticket_plural} to HOPE 2020!"
+
+# Message templates. "{tickets}" will be replaced with a few lines for
+# "Here's your ticket(s):\nticket1\nticket2\n..."
+[emails.messages]
+
+attendee = """
+Greetings!
+
+* This message contains information for your participation
+  in the HOPE 2020 conference, starting July 25 *
+
+Thank you again for registering for HOPE 2020. The program is still
+getting some finishing touches, but is substantially finalized. Visit
+https://www.hope.net to see the schedule of well over 100 talks, 60
+workshops, plus keynotes, performances, contests, and more.
+
+To ensure registered ticket holders are able to get access to all that
+HOPE has to offer, we will be using a special ticket code. Treat this
+like a conference badge at an in-person conference: it is how you get
+access to workshops, chat rooms, tech support, and other things.
+
+Don't share it. Don't lose it.
+
+{tickets}
+
+If you purchased multiple tickets, you should provide the code to the
+other people you purchased for. Ticket codes are transferable, but
+may only be used once at any time (just like a conference badge at an
+in-person HOPE conference).
+
+Next steps:
+
+1. Plan your HOPE experience. Look at the program at
+https://www.hope.net and think about what talks, keynotes, and other
+events you want to be part of.
+
+If you cannot attend everything you are interested in, don't worry!
+Replay on demand will be offered, soon after each talk or keynote is
+completed.
+
+
+2. Select any workshops you are interested in. Registration will open
+shortly before HOPE begins. You will need your ticket code to
+register.
+
+Most workshops will have live interaction using the BigBlueButton
+teleconferencing software. You might want to test your connectivity
+to this system before HOPE begins. Visit https://wiki.hope.net for
+more information.
+
+
+3. Visit the live stream. This is how you will watch talks, including
+keynotes. This page has our test stream (might not be available
+all the time): https://livestream.com/internetsociety3/hope2020
+
+More information about the live stream is here:
+  https://wiki.hope.net/index.php?title=LIVESTREAM
+
+
+4. Register for our Matrix chat system. This is where you can ask
+questions of talks, get tech support, and interact with other
+attendees.
+
+Visit https://riot.hope.net and set up a username. Select "Create
+account" and choose your own username and password. Optionally provide
+your email address - this makes it a little easier to recover lost
+passwords and encryption keys. All of this information is internal
+to the HOPE conference: It won't be shared.
+
+You will be prompted to generate a security key, or set up a security
+phrase. This is highly recommended, because parts of Matrix are
+encrypted and your key or phrase is how you will be able to see past
+messages.
+
+
+5. Become part of the Matrix HOPE Attendees Community. This is where
+you will find chat rooms just for attendees.
+
+First, go ahead and login to Matrix with your new account.
+
+Then, follow these instructions to join the Community:
+  https://wiki.hope.net/index.php?title=Conference_bot
+
+You might prefer to use the "Element Nightly" Matrix client, rather
+than the Web-based client at https://riot.hope.net .  The advantage of
+Element is that it has a few extra usability features.  More
+importantly, it runs natively on essentially all platforms. You can be
+logged in from multiple locations.
+
+Get the Element client here: https://element.io/
+
+Note that Element is a "nightly" build, which means you will be
+prompted to reinstall the latest client every day or so.
+
+
+We are looking forward to your participation in HOPE 2020.
+
+HOPE 2020 will be taking place online from July 25 to August 2, 2020.
+
+More details and updates can be found at www.hope.net
+"""
+
+comped = """
+Greetings!
+
+* This message contains information for your participation
+   in the HOPE 2020 conference, starting July 25 *
+
+We're pleased to welcome you to HOPE 2020. The program
+is still getting some finishing touches, but is substantially
+finalized. Visit https://www.hope.net to see the schedule of
+well over 100 talks, 60 workshops, plus keynotes, performances,
+contests, and more.
+
+To ensure registered ticket holders are able to get access
+to all that HOPE has to offer, you will be using a special
+ticket code. Treat this like a conference badge at an in-person
+conference: it is how you get access to workshops, chat
+rooms, tech support, and other things.
+
+Don't share it. Don't lose it.
+
+{tickets}
+
+If you received multiple tickets, you should provide the
+code to the other people you want to use them. Ticket codes
+are transferable, but may only be used once at any time
+(just like a conference badge at an in-person HOPE
+conference).
+
+Next steps:
+1. Plan your HOPE experience. Look at the program at
+https://www.hope.net and think about what talks, keynotes,
+workshops, and other events you want to be part of.
+
+Don't worry if you cannot attend everything of interest:
+talks and keynotes will be recorded, and available for
+on-demand playback shortly after they are presented.
+
+Most workshops will not be recorded, though, and only
+will happen interactively.
+
+2. Visit https://wiki.hope.net to start getting familiar with the
+HOPE technologies. You can test the live stream, and read
+a little about Matrix, the chat system HOPE will utilize.
+
+Information about how to register for Matrix, and how to
+sign up for workshops, will be available in the days before
+HOPE.
+
+During HOPE, if you run into problems with the technologies,
+access to workshops, or anything else, first check the Wiki.
+We are maintaining a knowledge base to make it easier to
+share information.
+
+If you need help during HOPE, your best options are:
+1. Ask in the Tech Support room in the Matrix chat.
+2. Email the infodesk team: helpdesk2020@helpdesk.hope.net
+
+We are so happy that you are part of HOPE 2020! Attendees
+are excited and the program is incredibly strong. We are counting
+down the last days until the start of HOPE 2020, and looking
+forward to a great conference experience for everyone.
+
+HOPE 2020 will be taking place online from July 25 to August 2, 2020.
+
+More details and updates can be found at www.hope.net
+"""
+
+speaker = """
+Greetings!
+
+* This message contains information for your participation
+  in the HOPE 2020 conference, starting July 25 *
+
+Thank you again for being part of HOPE 2020. The program is still
+getting some finishing touches, but is substantially finalized. Visit
+https://www.hope.net to see the schedule of well over 100 talks, 60
+workshops, plus keynotes, performances, contests, and more.
+
+To ensure registered ticket holders are able to get access to all that
+HOPE has to offer, we will be using a special ticket code. Treat this
+like a conference badge at an in-person conference: it is how you get
+access to workshops, chat rooms, tech support, and other things.
+
+Don't share it. Don't lose it.
+
+As a presenter at HOPE, you are receiving a complimentary ticket
+code. Any additional codes are for you to provide to the other
+presenters in your session.
+
+{tickets}
+
+Ticket codes are transferable, but may only be used once at any time
+(just like a conference badge at an in-person HOPE conference).
+
+
+We previously sent your confirmed session time and other information.
+We will send your Zoom link by email, the day before your talk.
+
+If you have questions, be sure to get in touch!
+
+
+To participate beyond your session, this is the guidance we offer
+to all attendees:
+
+1. Plan your HOPE experience. Look at the program at
+https://www.hope.net and think about what talks, keynotes, and other
+events you want to be part of.
+
+If you cannot attend everything you are interested in, don't worry!
+Replay on demand will be offered, soon after each talk or keynote is
+completed.
+
+
+2. Select any workshops you are interested in. Registration will open
+shortly before HOPE begins. You will need your ticket code to
+register.
+
+Most workshops will have live interaction using the BigBlueButton
+teleconferencing software. You might want to test your connectivity
+to this system before HOPE begins. Visit https://wiki.hope.net for
+more information.
+
+
+3. Visit the live stream. This is how you will watch talks, including
+keynotes. This page has our test stream (might not be available
+all the time): https://livestream.com/internetsociety3/hope2020
+
+More information about the live stream is here:
+  https://wiki.hope.net/index.php?title=LIVESTREAM
+
+
+4. Register for our Matrix chat system. This is where you can ask
+questions of talks, get tech support, and interact with other
+attendees.
+
+Visit https://riot.hope.net and set up a username. Select "Create
+account" and choose your own username and password. Optionally provide
+your email address - this makes it a little easier to recover lost
+passwords and encryption keys. All of this information is internal
+to the HOPE conference: It won't be shared.
+
+You will be prompted to generate a security key, or set up a security
+phrase. This is highly recommended, because parts of Matrix are
+encrypted and your key or phrase is how you will be able to see past
+messages.
+
+
+5. Become part of the Matrix HOPE Attendees Community. This is where
+you will find chat rooms just for attendees.
+
+First, go ahead and login to Matrix with your new account.
+
+Then, follow these instructions to join the Community:
+  https://wiki.hope.net/index.php?title=Conference_bot
+
+You might prefer to use the "Element Nightly" Matrix client, rather
+than the Web-based client at https://riot.hope.net .  The advantage of
+Element is that it has a few extra usability features.  More
+importantly, it runs natively on essentially all platforms. You can be
+logged in from multiple locations.
+
+Get the Element client here: https://element.io/
+
+Note that Element is a "nightly" build, which means you will be
+prompted to reinstall the latest client every day or so.
+
+
+We are looking forward to your participation in HOPE 2020.
+
+HOPE 2020 will be taking place online from July 25 to August 2, 2020.
+
+More details and updates can be found at www.hope.net
+"""
+
+workshop = """
+Greetings!
+
+Your presentation at HOPE 2020 is scheduled, and we are writing today
+to make sure you are ready, and to respond to any questions.
+
+We know you are busy, and ask you to carefully read this email. It
+has important information about your HOPE session.
+
+First, please make sure your session details are right.  Visit
+https://www.hope.net and use the Schedule tab to see the program
+information (you can also access it via the Speakers tab).
+
+Second, please prepare for your session. Get a login for BigBlueButton
+at https://workshops.hope.net so that you can manage your presentation
+"room." Prepare any externally-hosted videos. Practice with BBB in
+your own room, after you get a login.
+
+Third, use your ticket code below to get a Matrix login. This is the
+chat system we will use. More details are below.
+
+
+YOUR TICKET
+
+As a presenter, you have full access to the HOPE 2020 experience, and
+are encouraged to be part of the online community of attendees.
+
+To ensure registered ticket holders are able to get access to all that
+HOPE has to offer, we will be using a special ticket code. Treat this
+like a conference badge at an in-person conference: it is how you get
+access to workshops, chat rooms, tech support, and other things.
+
+Don't share it. Don't lose it.
+
+As a presenter at HOPE, you are receiving a complimentary ticket
+code. Any additional codes are for you to provide to the other
+presenters in your session.
+
+{tickets}
+
+Ticket codes are transferable, but may only be used once at any time
+(just like a conference badge at an in-person HOPE conference).
+
+
+BIG BLUE BUTTON
+
+For most workshops, we will use BigBlueButton (BBB). This is a
+teleconferencing system made specifically for instruction, and it has
+some features for teaching that are a good match for us.
+
+Workshop registration will open around 24 hours before HOPE begins.
+
+The link to your virtual room will be sent to you and attendees
+shortly before the scheduled start time (at least an hour before).
+
+You are encouraged to test BBB. Visit https://workshops.hope.net/ and
+create a login. And then, you can create a test room to explore
+features.  There is documentation on BBB, including important things
+like screen sharing and video playback, at: https://wiki.hope.net ..
+Look for the link for "BigBlueButton How-To"
+
+For BBB testing, you can even invite other people! Registration is
+open until the start of HOPE, and then will be restricted (i.e.,
+someone will need to approve your account request).
+
+
+MATRIX
+
+Register for our Matrix chat system. This is where you can ask
+questions of talks, get tech support, and interact with other
+attendees. You can use it before or even during your session to
+get tech support.
+
+Visit https://riot.hope.net to set up a username. Select "Create
+account" and choose your own username and password. Optionally provide
+your email address - this makes it a little easier to recover lost
+passwords and encryption keys. All of this information is internal
+to the HOPE conference: It won't be shared.
+
+You will be prompted to generate a security key, or set up a security
+phrase. This is highly recommended, because parts of Matrix are
+encrypted and your key or phrase is how you will be able to see past
+messages.
+
+Become part of the Matrix HOPE Attendees and Presenters Communities -
+this is where the conference chat "rooms" are found. First, go ahead
+and login to Matrix with your new account. Then, follow these
+instructions to join the Community:
+https://wiki.hope.net/index.php?title=Conference_bot
+
+
+NEED HELP?
+
+If you need help, we are here for you!
+
+1. Respond to this email, and we'll try to provide a timely response.
+
+2. Email helpdesk2020@helpdesk.hope.net , especially if you are having
+trouble with one of the conference technologies.
+
+3. The chat system we will use is called Matrix. Within the Matrix
+chat, there is a Tech Support room. Presenters have a priority Tech
+Support room within their own Matrix community.
+
+In addition, we will have volunteers within your presentation room as
+well as in Matrix chat. They are there to help you to have a smooth
+experience, and let you focus on your presentation.
+
+Some of these technologies may be adjusted or changed during HOPE, as
+needed. We will use email, as well as the presenter-only rooms of the
+Matrix chat, to keep you informed.
+
+
+THANK YOU!
+The presentations at HOPE are the key value for attendees, and this is
+where the incredible innovation of the hacker community shines. We
+appreciate that you are going to be spending time with HOPE, sharing
+your knowledge. Thank you.
+
+
+HOPE 2020 will be taking place online from July 25 to August 2, 2020.
+
+More details and updates can be found at www.hope.net
+"""
