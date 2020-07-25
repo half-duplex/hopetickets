@@ -15,6 +15,7 @@ parent_dir = os.path.abspath(os.path.dirname(__file__))
 vendor_dir = os.path.join(parent_dir, "vendor")
 sys.path.append(vendor_dir)
 
+import filelock
 from tomlkit.toml_file import TOMLFile
 
 logger = logging.getLogger()
@@ -255,9 +256,6 @@ if __name__ == "__main__":
     toml = TOMLFile(config_file)
     config = toml.read()
 
-    tokens = ConTokens(config["tokens"])
-    emails = ConEmails(config["emails"])
-
     if len(sys.argv) == 1 or sys.argv[1] == "help":
         print(
             dedent(
@@ -280,8 +278,13 @@ if __name__ == "__main__":
         )
         exit(4)
 
+    lock = filelock.FileLock("database.lock", timeout=30)
+    tokens = ConTokens(config["tokens"])
+    emails = ConEmails(config["emails"])
+
     if sys.argv[1] == "init":
-        tokens.init_db()
+        with lock:
+            tokens.init_db()
     elif sys.argv[1] == "gentokens":
         if len(sys.argv) < 4:
             print("Usage: {} {} TYPE COUNT".format(sys.argv[0], sys.argv[1]))
@@ -289,7 +292,8 @@ if __name__ == "__main__":
         token_type = sys.argv[2]
         count = int(sys.argv[3])
 
-        tokens.gen_tokens(token_type, count)
+        with lock:
+            tokens.gen_tokens(token_type, count)
     elif sys.argv[1] == "export":
         if len(sys.argv) < 3:
             print("Usage: {} {} TYPE [FILENAME]".format(sys.argv[0], sys.argv[1]))
@@ -300,7 +304,8 @@ if __name__ == "__main__":
         else:
             now = datetime.now().strftime("%Y%m%d-%H%M%S.%f")
             filename = "export-{}-{}.csv".format(sys.argv[2], now)
-        tokens.export(sys.argv[2], filename)
+        with lock:
+            tokens.export(sys.argv[2], filename)
     elif sys.argv[1] == "issue":
         if len(sys.argv) < 4:
             print("Usage: {} {} TYPE EMAIL [COUNT]".format(sys.argv[0], sys.argv[1]))
@@ -310,12 +315,14 @@ if __name__ == "__main__":
         else:
             count = 1
         print("Issued {} {} tokens for {}:".format(count, sys.argv[2], sys.argv[3]))
-        print(*tokens.take_tokens(sys.argv[2], sys.argv[3], count), sep="\n")
+        with lock:
+            print(*tokens.take_tokens(sys.argv[2], sys.argv[3], count), sep="\n")
     elif sys.argv[1] == "find":
         if len(sys.argv) < 4:
             print("Usage: {} {} TYPE EMAIL".format(sys.argv[0], sys.argv[1]))
             exit(4)
-        issued_tokens = tokens.find_tokens(sys.argv[2], sys.argv[3])
+        with lock:
+            issued_tokens = tokens.find_tokens(sys.argv[2], sys.argv[3])
         print(
             "Found {} {} tokens for {}:".format(
                 len(issued_tokens), sys.argv[2], sys.argv[3]
@@ -331,21 +338,29 @@ if __name__ == "__main__":
         else:
             count = 1
         print("Sending {} {} tokens to {}".format(count, sys.argv[2], sys.argv[3]))
-        issued_tokens = tokens.take_tokens(sys.argv[2], sys.argv[3], count)
+        with lock:
+            issued_tokens = tokens.take_tokens(sys.argv[2], sys.argv[3], count)
         emails.send(sys.argv[2], sys.argv[3], issued_tokens)
     elif sys.argv[1] == "resend":
         if len(sys.argv) < 4:
             print("Usage: {} {} TYPE EMAIL".format(sys.argv[0], sys.argv[1]))
             exit(4)
-        issued_tokens = tokens.find_tokens(sys.argv[2], sys.argv[3])
-        print("Resending {} {} tokens to {}".format(len(issued_tokens), sys.argv[2], sys.argv[3]))
+        with lock:
+            issued_tokens = tokens.find_tokens(sys.argv[2], sys.argv[3])
+        print(
+            "Resending {} {} tokens to {}".format(
+                len(issued_tokens), sys.argv[2], sys.argv[3]
+            )
+        )
         emails.send(sys.argv[2], sys.argv[3], issued_tokens)
     elif sys.argv[1] == "stats":
-        for token_type, count in tokens.stats().items():
-            print("{}:\t{}".format(token_type, count))
+        with lock:
+            for token_type, count in tokens.stats().items():
+                print("{}:\t{}".format(token_type, count))
     elif sys.argv[1] == "db_exec":
-        tokens._db.execute(sys.argv[2])
-        tokens._db.commit()
+        with lock:
+            tokens._db.execute(sys.argv[2])
+            tokens._db.commit()
         print(tokens._db.total_changes)
     else:
         logger.error(

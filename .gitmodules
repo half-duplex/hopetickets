@@ -5,3 +5,6 @@
 [submodule "vendor_checkout/tomlkit"]
 	path = vendor_checkout/tomlkit
 	url = https://github.com/sdispater/tomlkit.git
+[submodule "vendor_checkout/py-filelock"]
+	path = vendor_checkout/py-filelock
+	url = https://github.com/benediktschmitt/py-filelock.git
