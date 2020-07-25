@@ -268,7 +268,7 @@ if __name__ == "__main__":
             init - Create database
             gentokens TYPE X - Generate X more tokens of TYPE
             export TYPE [FILENAME] - Generate CSV of all un-exported TYPE tokens
-            issue TYPE EMAIL [COUNT] - Take tokens, mark used
+            issue TYPE EMAIL [COUNT] - Take tokens, print to console, mark used
             find TYPE EMAIL - Find previously issued tokens
             send TYPE EMAIL X - Send X unused tokens of TYPE to EMAIL
             resend TYPE EMAIL - Resend all previously issued tokens of TYPE for EMAIL
