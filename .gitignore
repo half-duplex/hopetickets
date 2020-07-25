@@ -1,5 +1,6 @@
 venv/
 *.db
+*.lock
 *.csv
 __pycache__/
 *.pyc
