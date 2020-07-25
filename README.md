@@ -17,6 +17,7 @@ git submodule init
 ./main.py send attendee you@example.com 2
 ```
 Note that more tokens will be automatically generated if unused ones run out.
+See `./main.py help` for other commands, like statistics and resending codes.
 
 ## Contributing
 Install as above, but add the development requirements:
