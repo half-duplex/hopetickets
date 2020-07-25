@@ -269,6 +269,7 @@ if __name__ == "__main__":
             issue TYPE EMAIL [COUNT] - Take tokens, print to console, mark used
             find TYPE EMAIL - Find previously issued tokens
             send TYPE EMAIL X - Send X unused tokens of TYPE to EMAIL
+            sendcsv TYPE FILE - Send unused tokens of TYPE to each EMAIL,COUNT from FILE
             resend TYPE EMAIL - Resend all previously issued tokens of TYPE for EMAIL
             stats - Print statistics about tokens
         """.format(
@@ -341,6 +342,22 @@ if __name__ == "__main__":
         with lock:
             issued_tokens = tokens.take_tokens(sys.argv[2], sys.argv[3], count)
         emails.send(sys.argv[2], sys.argv[3], issued_tokens)
+    elif sys.argv[1] == "sendcsv":
+        if len(sys.argv) < 4:
+            print("Usage: {} {} TYPE FILE".format(sys.argv[0], sys.argv[1]))
+            exit(4)
+        print("Sending {} tokens for {}".format(sys.argv[2], sys.argv[3]))
+        with lock:
+            with open(sys.argv[3], "r") as f:
+                csv_reader = csv.reader(f)
+                for row in csv_reader:
+                    email = row[0]
+                    count = int(row[1])
+                    print(
+                        "Sending {} {} tokens to {}".format(count, sys.argv[2], email)
+                    )
+                    issued_tokens = tokens.take_tokens(sys.argv[2], email, count)
+                    emails.send(sys.argv[2], email, issued_tokens)
     elif sys.argv[1] == "resend":
         if len(sys.argv) < 4:
             print("Usage: {} {} TYPE EMAIL".format(sys.argv[0], sys.argv[1]))
