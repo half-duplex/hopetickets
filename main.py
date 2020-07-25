@@ -207,13 +207,7 @@ class ConEmails:
         if len(tokens) == 0:
             raise Exception("Refusing to send no tokens")
 
-        message = "From: {} <{}>\n".format(
-            self._config["sender_name"], self._config["sender_email"]
-        )
-        message += "To: <{}>\n".format(address)
-        message += "Subject: {}\n".format(self._config["subject"])
-        message += "\n"
-
+        # Build ticket code section
         if len(tokens) == 1:
             str_codesare = "code is"
             str_tickets = "ticket"
@@ -224,6 +218,16 @@ class ConEmails:
         token_section += "Your ticket {}:\n".format(str_codesare)
         token_section += "\n\n".join(tokens)
         token_section += "\n"
+
+        # Build message
+        message = "From: {} <{}>\n".format(
+            self._config["sender_name"], self._config["sender_email"]
+        )
+        message += "To: <{}>\n".format(address)
+        message += "Subject: {}\n".format(
+            self._config["subject"].format(str_tickets=str_tickets)
+        )
+        message += "\n"
 
         message += self._config["messages"][token_type].format(tickets=token_section)
 

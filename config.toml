@@ -7,7 +7,7 @@ log_level = "DEBUG"
 log_level = "DEBUG"
 sender_name = "Hackers On Planet Earth"
 sender_email = "tickets@hope.net"
-subject = "Your {ticket_plural} to HOPE 2020!"
+subject = "Your {str_tickets} to HOPE 2020!"
 
 # Message templates. "{tickets}" will be replaced with a few lines for
 # "Here's your ticket(s):\nticket1\nticket2\n..."
