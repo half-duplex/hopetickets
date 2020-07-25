@@ -125,7 +125,7 @@ class ConTokens:
             ret[
                 "{} {}{}".format(
                     row[0],
-                    "email" if row[1] else "available",
+                    "sent" if row[1] else "available",
                     "" if row[2] else " unexported",
                 )
             ] = row[3]
