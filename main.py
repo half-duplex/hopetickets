@@ -85,17 +85,22 @@ class ConTokens:
     def _make_token(self):
         return hashlib.sha256(os.urandom(256)).hexdigest()
 
-    def _get_tokens(self, token_type, exported, set_exported=True):
+    def _get_tokens(self, token_type, exported, set_exported=True, hashed=False):
         if set_exported and exported:
             raise Exception("Marking exported without exporting unexported is nonsense")
         cur = self._db.cursor()
         cur.execute("begin exclusive")
+
         cur.execute(
             "select token from tokens where token_type=? and exported=?",
             (token_type, exported),
         )
         for row in cur.fetchall():
-            yield row
+            if hashed:
+                yield [hashlib.sha256(row[0].encode("ascii")).hexdigest(), "unused"]
+            else:
+                yield row
+
         if set_exported:
             cur.execute(
                 "update tokens set exported=true where token_type=? and exported=false",
@@ -104,13 +109,22 @@ class ConTokens:
             self._logger.info(
                 "Marked %s %s tokens as exported", cur.rowcount, token_type
             )
+
         self._db.commit()
 
     def export(self, token_type, filename, exported=False):
         self._logger.info("Exporting %s tokens to %s", token_type, filename)
         with open(filename, "w") as f:
             csv_writer = csv.writer(f)
-            csv_writer.writerows(self._get_tokens(token_type, exported))
+            csv_writer.writerows(
+                self._get_tokens(token_type, exported, set_exported=False)
+            )
+            f.flush()
+            os.fsync(f.fileno())
+        filename = filename.rsplit(".", 1)[0] + "-hashed.csv"
+        with open(filename, "w") as f:
+            csv_writer = csv.writer(f)
+            csv_writer.writerows(self._get_tokens(token_type, exported, hashed=True))
             f.flush()
             os.fsync(f.fileno())
 
