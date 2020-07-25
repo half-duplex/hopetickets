@@ -334,7 +334,12 @@ if __name__ == "__main__":
         issued_tokens = tokens.take_tokens(sys.argv[2], sys.argv[3], count)
         emails.send(sys.argv[2], sys.argv[3], issued_tokens)
     elif sys.argv[1] == "resend":
-        pass
+        if len(sys.argv) < 4:
+            print("Usage: {} {} TYPE EMAIL".format(sys.argv[0], sys.argv[1]))
+            exit(4)
+        issued_tokens = tokens.find_tokens(sys.argv[2], sys.argv[3])
+        print("Resending {} {} tokens to {}".format(len(issued_tokens), sys.argv[2], sys.argv[3]))
+        emails.send(sys.argv[2], sys.argv[3], issued_tokens)
     elif sys.argv[1] == "stats":
         for token_type, count in tokens.stats().items():
             print("{}:\t{}".format(token_type, count))
