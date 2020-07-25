@@ -199,7 +199,7 @@ class ConEmails:
 
     def send(self, token_type, address, tokens):
         self._logger.info(
-            "Sending {} {} tokens to {}", len(tokens), token_type, address
+            "Sending %s %s tokens to %s", len(tokens), token_type, address
         )
 
         if token_type not in self._config["messages"]:
