@@ -1,6 +1,7 @@
 [tokens]
 db_file = "tokens.db"
 token_types = ["attendee", "comped", "speaker", "workshop"]
+token_prefix = "HOPE13"
 log_level = "DEBUG"
 
 [emails]

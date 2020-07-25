@@ -77,13 +77,19 @@ class ConTokens:
         """
         if token_type:
             for _ in range(count):
-                yield (self._make_token(), token_type)
+                yield (self._make_token(token_type), token_type)
         else:
             for _ in range(count):
-                yield self._make_token()
+                yield self._make_token(token_type)
 
-    def _make_token(self):
-        return hashlib.sha256(os.urandom(256)).hexdigest()
+    def _make_token(self, token_type=""):
+        token_raw = hashlib.sha256(os.urandom(256)).hexdigest()
+        prefix = self._config.get("token_prefix", "")
+        if len(prefix) > 0:
+            prefix += token_type[0].upper() + "-"
+            return prefix + token_raw[len(prefix) :]
+        else:
+            return token_raw
 
     def _get_tokens(self, token_type, exported, set_exported=True, hashed=False):
         if set_exported and exported:
