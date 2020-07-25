@@ -228,7 +228,7 @@ class ConEmails:
         message += self._config["messages"][token_type].format(tickets=token_section)
 
         try:
-            smtp = smtplib.SMTP("localhost")
+            smtp = smtplib.SMTP(self._config.get("smtp_host", "localhost"))
             smtp.sendmail(self._config["sender_email"], address, message)
             self._logger.info("Sent message to %s", address)
         except smtplib.SMTPException as e:
