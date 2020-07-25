@@ -214,8 +214,8 @@ class ConEmails:
         else:
             str_codesare = "codes are"
             str_tickets = "tickets"
-        token_section = "You purchased {} {}.\n".format(len(tokens), str_tickets)
-        token_section += "Your ticket {}:\n".format(str_codesare)
+        token_section = "You purchased {} {}.\n\n".format(len(tokens), str_tickets)
+        token_section += "Your ticket {}:\n\n".format(str_codesare)
         token_section += "\n\n".join(tokens)
         token_section += "\n"
 
