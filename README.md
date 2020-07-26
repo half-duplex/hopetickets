@@ -5,6 +5,7 @@
 git clone https://github.com/half-duplex/hopetickets.git
 cd hopetickets
 git submodule init
+git submodule update
 ```
 
 ## Using
@@ -15,6 +16,8 @@ git submodule init
 ./main.py export attendee
 # repeat for other types. produces export-*.csv
 ./main.py send attendee you@example.com 2
+# to send from CSV (rows of email,count)
+./main.py sendcsv attendee attendees.csv
 ```
 Note that more tokens will be automatically generated if unused ones run out.
 See `./main.py help` for other commands, like statistics and resending codes.
@@ -30,7 +33,6 @@ Before committing, format and lint:
 ```sh
 black main.py && flake8 main.py
 ```
-
 
 ## Running
 Thoretically, just run ./main.py
