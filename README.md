@@ -1,5 +1,6 @@
 # hopetickets
 
+
 ## Installing
 ```sh
 git clone https://github.com/half-duplex/hopetickets.git
@@ -7,6 +8,25 @@ cd hopetickets
 git submodule init
 git submodule update
 ```
+
+
+## Running
+Thoretically, just run `./main.py`
+
+If that doesn't work, install with the Contributing instructions (dev
+requirements optional) and:
+
+```sh
+. venv/bin/activate
+./main.py [...]
+```
+
+OR
+
+```
+venv/bin/python main.py [...]
+```
+
 
 ## Using
 ```sh
@@ -30,6 +50,7 @@ Note that importing this CSV may not preserve the difference between NULL
 (empty column in CSV, token not used) and an empty string (empty quotes column
 in CSV, token used with no email).
 
+
 ## Contributing
 Install as above, but add the development requirements:
 ```sh
@@ -40,21 +61,4 @@ pip install -r requirements.txt -r requirements-dev.txt
 Before committing, format and lint:
 ```sh
 black . && flake8
-```
-
-## Running
-Thoretically, just run ./main.py
-
-If that doesn't work, install with the Contributing instructions (dev
-requirements optional) and:
-
-```sh
-. venv/bin/activate
-./main.py [...]
-```
-
-OR
-
-```
-venv/bin/python main.py [...]
 ```
