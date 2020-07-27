@@ -63,6 +63,7 @@ class ConTokens:
         if token_type not in self._config["token_types"]:
             self._logger.error("Invalid token type %s", token_type)
             raise Exception("InvalidTokenType")
+
         self._db.execute("begin transaction")
         self._db.executemany(
             "insert into tokens (token, token_type) values (?,?)",
@@ -120,6 +121,9 @@ class ConTokens:
 
     def export(self, token_type, filename, exported=False):
         self._logger.info("Exporting %s tokens to %s", token_type, filename)
+        if token_type not in self._config["token_types"]:
+            self._logger.error("Invalid token type %s", token_type)
+            raise Exception("InvalidTokenType")
         with open(filename, "w") as f:
             csv_writer = csv.writer(f)
             csv_writer.writerows(
@@ -133,6 +137,32 @@ class ConTokens:
             csv_writer.writerows(self._get_tokens(token_type, exported, hashed=True))
             f.flush()
             os.fsync(f.fileno())
+
+    def _import_csv_sets(self, token_type, filename, exported=True):
+        with open(filename, "r") as f:
+            csv_reader = csv.reader(f)
+            for row in csv_reader:
+                if len(row) < 2:
+                    raise Exception("InvalidSentRecord", "Missing fields: {}".format(repr(row)))
+                email, token = row[:2]
+                if len(token) != self._config.get("token_length", 64):
+                    self._logger.warning("Bad token length of %s on record %r", len(token), row)
+                yield token, token_type, email, exported
+
+    def importcsv(self, token_type, filename, exported=True):
+        self._logger.info("Importing %s tokens from %s as %s", token_type, filename, "exported" if exported else "not exported")
+        if token_type not in self._config["token_types"]:
+            self._logger.error("Invalid token type %s", token_type)
+            raise Exception("InvalidTokenType")
+
+        self._db.execute("begin exclusive")
+        self._db.executemany(
+            "insert into tokens (token, token_type, email, exported) values (?,?,?,?)",
+            self._import_csv_sets(token_type, filename, exported),
+        )
+        self._db.commit()
+
+        self._logger.info("Imported %s tokens", self._db.total_changes)
 
     def stats(self):
         cur = self._db.cursor()
@@ -153,6 +183,10 @@ class ConTokens:
         return ret
 
     def check_available(self, token_type):
+        if token_type not in self._config["token_types"]:
+            self._logger.error("Invalid token type %s", token_type)
+            raise Exception("InvalidTokenType")
+
         cur = self._db.cursor()
         cur.execute(
             "select count(*) from tokens where token_type=? and email is null",
@@ -161,6 +195,10 @@ class ConTokens:
         return cur.fetchone()[0]
 
     def take_tokens(self, token_type, address, count=1):
+        if token_type not in self._config["token_types"]:
+            self._logger.error("Invalid token type %s", token_type)
+            raise Exception("InvalidTokenType")
+
         # if not enough, make another batch. a little early for concurrency
         while self.check_available(token_type) < count + 20:
             self.gen_tokens(token_type)
@@ -195,6 +233,10 @@ class ConTokens:
         return tokens
 
     def find_tokens(self, token_type, address):
+        if token_type not in self._config["token_types"]:
+            self._logger.error("Invalid token type %s", token_type)
+            raise Exception("InvalidTokenType")
+
         cur = self._db.cursor()
         cur.execute(
             "select token from tokens where token_type=? and email=?",
@@ -285,6 +327,7 @@ if __name__ == "__main__":
             help - Show this
             init - Create database
             gentokens TYPE X - Generate X more tokens of TYPE
+            import TYPE FILENAME - Import CSV of TYPE tokens (imported as EXPORTED and USED!)
             export TYPE [FILENAME] - Generate CSV of all un-exported TYPE tokens
             issue TYPE EMAIL [COUNT] - Take tokens, print to console, mark used
             find TYPE EMAIL - Find previously issued tokens
@@ -315,6 +358,12 @@ if __name__ == "__main__":
 
         with lock:
             tokens.gen_tokens(token_type, count)
+    elif sys.argv[1] == "import":
+        if len(sys.argv) < 4:
+            print("Usage: {} {} TYPE FILENAME".format(sys.argv[0], sys.argv[1]))
+            exit(4)
+        with lock:
+            tokens.importcsv(sys.argv[2], sys.argv[3])
     elif sys.argv[1] == "export":
         if len(sys.argv) < 3:
             print("Usage: {} {} TYPE [FILENAME]".format(sys.argv[0], sys.argv[1]))
