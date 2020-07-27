@@ -241,18 +241,23 @@ class ConTokens:
         cur.execute("commit")
         return tokens
 
-    def find_tokens(self, token_type, address):
-        if token_type not in self._config["token_types"]:
+    def find_tokens(self, address, token_type):
+        if token_type is not None and token_type not in self._config["token_types"]:
             self._logger.error("Invalid token type %s", token_type)
             raise Exception("InvalidTokenType")
 
-        cur = self._db.cursor()
-        cur.execute(
-            "select token from tokens where token_type=? and email=?",
-            (token_type, address),
+        query = (
+            "select token, token_type, email, used_at from tokens "
+            "where (email like ? or token like ?)"
         )
-        tokens = [x[0] for x in cur.fetchall()]
-        return tokens
+        args = (address, address)
+        if token_type is not None:
+            query += "and token_type=?"
+            args += (token_type,)
+
+        cur = self._db.cursor()
+        cur.execute(query, args)
+        return cur.fetchall()
 
 
 class ConEmails:
@@ -339,7 +344,7 @@ if __name__ == "__main__":
             import TYPE FILENAME - Import CSV of TYPE tokens (imported as EXPORTED and USED!)
             export TYPE [FILENAME] - Generate CSV of all un-exported TYPE tokens
             issue TYPE EMAIL [COUNT] - Take tokens, print to console, mark used
-            find TYPE EMAIL - Find previously issued tokens
+            find EMAIL|TOKEN [TYPE] - Find previously issued tokens. % wildcards accepted.
             send TYPE EMAIL X - Send X unused tokens of TYPE to EMAIL
             sendcsv TYPE FILE - Send unused tokens of TYPE to each EMAIL,COUNT from FILE
             resend TYPE EMAIL - Resend all previously issued tokens of TYPE for EMAIL
@@ -397,17 +402,26 @@ if __name__ == "__main__":
         with lock:
             print(*tokens.take_tokens(sys.argv[2], sys.argv[3], count), sep="\n")
     elif sys.argv[1] == "find":
-        if len(sys.argv) < 4:
-            print("Usage: {} {} TYPE EMAIL".format(sys.argv[0], sys.argv[1]))
+        if len(sys.argv) < 3:
+            print("Usage: {} {} EMAIL|TOKEN [TYPE]".format(sys.argv[0], sys.argv[1]))
             exit(4)
+        ticket_type = sys.argv[3] if len(sys.argv) > 3 else None
         with lock:
-            issued_tokens = tokens.find_tokens(sys.argv[2], sys.argv[3])
+            issued_tokens = tokens.find_tokens(sys.argv[2], ticket_type)
         print(
-            "Found {} {} tokens for {}:".format(
-                len(issued_tokens), sys.argv[2], sys.argv[3]
+            'Found {} tokens for "{}" (type={}):'.format(
+                len(issued_tokens), sys.argv[2], ticket_type or "any"
             )
         )
-        print(*issued_tokens, sep="\n")
+        # print(*issued_tokens, sep="\n")
+        for token, token_type, email, used_at in issued_tokens:
+            if email is None:
+                email = "(unused)"
+                used_at = ""
+            elif email == "":
+                email = "(used, no email)"
+                used_at = used_at or "(no use time)"
+            print(token, token_type, email, used_at)
     elif sys.argv[1] == "send":
         if len(sys.argv) < 4:
             print("Usage: {} {} TYPE EMAIL [COUNT]".format(sys.argv[0], sys.argv[1]))
