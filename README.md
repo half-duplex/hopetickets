@@ -39,7 +39,7 @@ pip install -r requirements.txt -r requirements-dev.txt
 ```
 Before committing, format and lint:
 ```sh
-black main.py && flake8 main.py
+black . && flake8
 ```
 
 ## Running

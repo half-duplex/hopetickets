@@ -15,8 +15,8 @@ parent_dir = os.path.abspath(os.path.dirname(__file__))
 vendor_dir = os.path.join(parent_dir, "vendor")
 sys.path.append(vendor_dir)
 
-import filelock
-from tomlkit.toml_file import TOMLFile
+import filelock  # noqa: E402
+from tomlkit.toml_file import TOMLFile  # noqa: E402
 
 logger = logging.getLogger()
 
@@ -143,14 +143,23 @@ class ConTokens:
             csv_reader = csv.reader(f)
             for row in csv_reader:
                 if len(row) < 2:
-                    raise Exception("InvalidSentRecord", "Missing fields: {}".format(repr(row)))
+                    raise Exception(
+                        "InvalidSentRecord", "Missing fields: {}".format(repr(row))
+                    )
                 email, token = row[:2]
                 if len(token) != self._config.get("token_length", 64):
-                    self._logger.warning("Bad token length of %s on record %r", len(token), row)
+                    self._logger.warning(
+                        "Bad token length of %s on record %r", len(token), row
+                    )
                 yield token, token_type, email, exported
 
     def importcsv(self, token_type, filename, exported=True):
-        self._logger.info("Importing %s tokens from %s as %s", token_type, filename, "exported" if exported else "not exported")
+        self._logger.info(
+            "Importing %s tokens from %s as %s",
+            token_type,
+            filename,
+            "exported" if exported else "not exported",
+        )
         if token_type not in self._config["token_types"]:
             self._logger.error("Invalid token type %s", token_type)
             raise Exception("InvalidTokenType")
