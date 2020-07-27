@@ -22,6 +22,14 @@ git submodule update
 Note that more tokens will be automatically generated if unused ones run out.
 See `./main.py help` for other commands, like statistics and resending codes.
 
+To export the entire database as CSV, use the `sqlite3` command:
+```sh
+sqlite3 -csv -header tokens.db 'select * from tokens' >dump.csv
+```
+Note that importing this CSV may not preserve the difference between NULL
+(empty column in CSV, token not used) and an empty string (empty quotes column
+in CSV, token used with no email).
+
 ## Contributing
 Install as above, but add the development requirements:
 ```sh
